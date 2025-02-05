@@ -13,4 +13,5 @@ public interface DataAccess {
 	public void saveNewMember(LibraryMember member); 
 	public void saveNewBook(Book book);
 	public void addBookCopy(String book, int copyNum);
+	 public String checkoutBook(String memberId, String isbn);
 }

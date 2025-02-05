@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -68,14 +69,25 @@ final public class Book implements Serializable {
 	}
 	
 	
+//	public boolean isAvailable() {
+//		if(copies == null) {
+//			return false;
+//		}
+//		return Arrays.stream(copies)
+//				     .map(l -> l.isAvailable())
+//				     .reduce(false, (x,y) -> x || y);
+//	}
+	
 	public boolean isAvailable() {
-		if(copies == null) {
-			return false;
-		}
-		return Arrays.stream(copies)
-				     .map(l -> l.isAvailable())
-				     .reduce(false, (x,y) -> x || y);
+	    if (copies == null || copies.length == 0) { // Ensure copies is not null or empty
+	        return false;
+	    }
+
+	    return Arrays.stream(copies)
+	                 .filter(Objects::nonNull) // Ensure non-null BookCopy objects
+	                 .anyMatch(BookCopy::isAvailable); // Check if any copy is available
 	}
+	
 	@Override
 	public String toString() {
 		return "isbn: " + isbn + ", maxLength: " + maxCheckoutLength + ", available: " + isAvailable();

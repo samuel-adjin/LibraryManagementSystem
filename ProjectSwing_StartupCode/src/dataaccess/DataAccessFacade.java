@@ -7,11 +7,14 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import business.Book;
 import business.BookCopy;
+import business.CheckoutEntry;
 import business.LibraryMember;
 import dataaccess.DataAccessFacade.StorageType;
 
@@ -165,8 +168,41 @@ public class DataAccessFacade implements DataAccess {
 		 if(books.containsKey(isbn)) {
 			 Book foundBook = books.get(isbn);
 			  foundBook.addCopy(copyNum);
-			  System.out.print(foundBook);
+			  saveToStorage(StorageType.BOOKS, books);
 		 } 
 	}
+
+	@Override
+	public String checkoutBook(String memberId, String isbn) {
+	    HashMap<String, LibraryMember> mems = readMemberMap();
+	    HashMap<String, Book> books = this.readBooksMap();
+	    
+	    if (!mems.containsKey(memberId)) {
+	        return "Error: Member ID not found.";
+	    }
+	    if (!books.containsKey(isbn)) {
+	        return "Error: Book not found.";
+	    }
+
+	    Book foundBook = books.get(isbn);
+	    LibraryMember libraryMember = mems.get(memberId);
+	    BookCopy[] bookCopies = foundBook.getCopies();
+
+	    Optional<BookCopy> availableCopy = Arrays.stream(bookCopies).filter(BookCopy::isAvailable).findFirst();
+	    if (availableCopy.isEmpty()) {
+	        return "Error: No available copies of this book.";
+	    }
+
+	    int checkoutDays = availableCopy.get().getBook().getMaxCheckoutLength();
+	    CheckoutEntry entry = new CheckoutEntry(availableCopy.get(), checkoutDays);
+
+	    // Ensure checkoutRecord is not null
+	    libraryMember.getCheckoutRecord().addEntry(entry);
+
+	    availableCopy.get().changeAvailability();
+	    
+	    return "Checked out: " + foundBook.getTitle() + " (Copy #" + availableCopy.get().getCopyNum() + ") until " + entry.getDueDate();
+	}
+
 	
 }

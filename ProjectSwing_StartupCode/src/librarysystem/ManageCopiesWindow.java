@@ -21,6 +21,7 @@ public class ManageCopiesWindow extends JFrame {
         this.homeWindow = homeWindow;
         systemController = new SystemController();
         bookTitleToIsbnMap = new HashMap<>();
+
         setTitle("Manage Copies");
         setSize(400, 250);
         setLayout(new GridBagLayout());
@@ -36,7 +37,6 @@ public class ManageCopiesWindow extends JFrame {
         add(new JLabel("Select Book:"), gbc);
         gbc.gridx = 1;
         bookDropdown = new JComboBox<>();
-        populateBookDropdown(); // Populate dropdown with book titles and ISBNs
         add(bookDropdown, gbc);
 
         // Spinner for adding copies
@@ -57,8 +57,11 @@ public class ManageCopiesWindow extends JFrame {
         add(cancelButton, gbc);
 
         // Add action listeners
-        addButton.addActionListener(e -> addCopies()); // Call addCopies method
-        cancelButton.addActionListener(e -> dispose()); // Close the window
+        addButton.addActionListener(e -> addCopies());
+        cancelButton.addActionListener(e -> dispose());
+
+        // Populate dropdown
+        populateBookDropdown();
     }
 
     /**
@@ -66,19 +69,19 @@ public class ManageCopiesWindow extends JFrame {
      */
     private void addCopies() {
         String selectedBookTitle = (String) bookDropdown.getSelectedItem();
-        String isbn = bookTitleToIsbnMap.get(selectedBookTitle); // Get ISBN from the map
-        int copiesToAdd = (int) copiesSpinner.getValue();
-
-        if (isbn == null || isbn.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please select a valid book.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (selectedBookTitle == null || selectedBookTitle.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please select a book.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
+        String isbn = bookTitleToIsbnMap.get(selectedBookTitle);
+        int copiesToAdd = (int) copiesSpinner.getValue();
+
         try {
-            systemController.addBookCopy(isbn, copiesToAdd); // Call the addBookCopy method
+            systemController.addBookCopy(isbn, copiesToAdd);
             JOptionPane.showMessageDialog(this, copiesToAdd + " copies added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            homeWindow.refreshTable(); // Update HomeWindow table
-            dispose(); // Close the window
+            homeWindow.refreshTable();
+            dispose();
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -88,15 +91,16 @@ public class ManageCopiesWindow extends JFrame {
      * Populates the book dropdown with book titles and maps them to their ISBNs.
      */
     private void populateBookDropdown() {
-        var bookTitles = systemController.getAllBookTitles();
-        Map<String, Book> booksMap = systemController.fetchAllBooks().stream()
-                .collect(HashMap::new, (map, book) -> map.put(book.getIsbn(), book), HashMap::putAll);
+        var books = systemController.fetchAllBooks();
+        if (books.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No books available.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        for (Map.Entry<String, Book> entry : booksMap.entrySet()) {
-            String isbn = entry.getKey();
-            String title = entry.getValue().getTitle();
+        for (Book book : books) {
+            String title = book.getTitle();
             bookDropdown.addItem(title);
-            bookTitleToIsbnMap.put(title, isbn); // Map title to ISBN
+            bookTitleToIsbnMap.put(title, book.getIsbn());
         }
     }
 
@@ -123,7 +127,7 @@ public class ManageCopiesWindow extends JFrame {
             }
         });
 
-        manageCopiesButton.addActionListener(e -> new ManageCopiesWindow(homeWindow).setVisible(true));
+        manageCopiesButton.addActionListener(e -> SwingUtilities.invokeLater(() -> new ManageCopiesWindow(homeWindow).setVisible(true)));
         sideMenu.add(manageCopiesButton);
     }
 }

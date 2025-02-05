@@ -17,4 +17,6 @@ public interface ControllerInterface {
 	public void addBook(Book book);
 	public void addBookCopy(String isbn, int copyNum);
 	public List<Book>getAllBookTitles();
+	public String checkoutBook(String memberId, String isbn);
+	public List<CheckoutEntry> getCheckoutRecords(String memberId);
 }

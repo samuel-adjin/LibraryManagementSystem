@@ -1,9 +1,9 @@
 package business;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import dataaccess.Auth;
@@ -52,6 +52,9 @@ public class SystemController implements ControllerInterface {
         }
 		return books;
 	}
+
+
+
 	@Override
 	public void addLibraryMember(LibraryMember member) {
 		// TODO Auto-generated method stub
@@ -84,7 +87,6 @@ public class SystemController implements ControllerInterface {
 		// TODO Auto-generated method stub
 		DataAccess da = new DataAccessFacade();
 		da.addBookCopy(isbn, copyNum);
-		System.out.print("Sucess");
 		
 	}
 	@Override
@@ -92,4 +94,24 @@ public class SystemController implements ControllerInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public List<CheckoutEntry> getCheckoutRecords(String memberId) {
+		DataAccess da = new DataAccessFacade();
+	    HashMap<String, LibraryMember> members = da.readMemberMap();
+	    if (!members.containsKey(memberId)) {
+	    	System.out.println("In here");
+	        return Collections.emptyList(); 
+	    }
+	    System.out.println(members.get(memberId).getCheckoutRecord().getEntries());
+	    return members.get(memberId).getCheckoutRecord().getEntries();
+	}
+	@Override
+	public String checkoutBook(String memberId, String isbn) {
+		// TODO Auto-generated method stub
+		DataAccess da = new DataAccessFacade();
+		da.checkoutBook(memberId, isbn);
+		return "Ok";
+	}
+	
+	
 }

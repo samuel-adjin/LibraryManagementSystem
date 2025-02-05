@@ -9,10 +9,12 @@ import dataaccess.DataAccessFacade;
 
 final public class LibraryMember extends Person implements Serializable {
 	private String memberId;
+	private CheckoutRecord checkoutRecord;
 	
 	public LibraryMember(String memberId, String fname, String lname, String tel,Address add) {
 		super(fname,lname, tel, add);
-		this.memberId = memberId;		
+		this.memberId = memberId;	
+		this.checkoutRecord = new CheckoutRecord();
 	}
 	
 	
@@ -21,7 +23,13 @@ final public class LibraryMember extends Person implements Serializable {
 	}
 
 	
-	
+	  public CheckoutRecord getCheckoutRecord() {
+	        // Add null check and lazy initialization
+	        if (checkoutRecord == null) {
+	            checkoutRecord = new CheckoutRecord();
+	        }
+	        return checkoutRecord;
+	    }
 	@Override
 	public String toString() {
 		return "Member Info: " + "ID: " + memberId + ", name: " + getFirstName() + " " + getLastName() + 
