@@ -1,5 +1,6 @@
 package business;
 
+import java.util.HashMap;
 import java.util.List;
 
 import business.Book;
@@ -19,4 +20,6 @@ public interface ControllerInterface {
 	public List<Book>getAllBookTitles();
 	public String checkoutBook(String memberId, String isbn);
 	public List<CheckoutEntry> getCheckoutRecords(String memberId);
+	public List<CheckoutEntry> allBooksCheckout();
+	public HashMap<String, LibraryMember>  getAllLibraryMembers();
 }

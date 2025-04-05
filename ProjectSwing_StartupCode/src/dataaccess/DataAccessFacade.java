@@ -15,6 +15,7 @@ import java.util.Optional;
 import business.Book;
 import business.BookCopy;
 import business.CheckoutEntry;
+import business.CheckoutRecord;
 import business.LibraryMember;
 import dataaccess.DataAccessFacade.StorageType;
 
@@ -22,7 +23,7 @@ import dataaccess.DataAccessFacade.StorageType;
 public class DataAccessFacade implements DataAccess {
 	
 	enum StorageType {
-		BOOKS, MEMBERS, USERS;
+		BOOKS, MEMBERS, USERS,BOOKCHECKOUT;
 	}
 //	"C:\Users\faraday\Desktop\MPP\project\ProjectSwing_StartupCode\ProjectSwing_StartupCode\src\dataaccess\storage\USERS"
 //	public static final String OUTPUT_DIR = System.getProperty("user.dir") 
@@ -177,6 +178,7 @@ public class DataAccessFacade implements DataAccess {
 	    HashMap<String, LibraryMember> mems = readMemberMap();
 	    HashMap<String, Book> books = this.readBooksMap();
 	    
+	   
 	    if (!mems.containsKey(memberId)) {
 	        return "Error: Member ID not found.";
 	    }
@@ -187,21 +189,42 @@ public class DataAccessFacade implements DataAccess {
 	    Book foundBook = books.get(isbn);
 	    LibraryMember libraryMember = mems.get(memberId);
 	    BookCopy[] bookCopies = foundBook.getCopies();
+	    System.out.println("hghghghhg.");
 
-	    Optional<BookCopy> availableCopy = Arrays.stream(bookCopies).filter(BookCopy::isAvailable).findFirst();
-	    if (availableCopy.isEmpty()) {
-	        return "Error: No available copies of this book.";
+	    System.out.println(Arrays.toString(bookCopies));
+
+	    Optional<BookCopy> availableCopy = Arrays.stream(bookCopies).filter(BookCopy::isAvailable ).findFirst();
+	    if (!availableCopy.isPresent()) {
+	        throw new IllegalArgumentException();
 	    }
-
+	   
 	    int checkoutDays = availableCopy.get().getBook().getMaxCheckoutLength();
 	    CheckoutEntry entry = new CheckoutEntry(availableCopy.get(), checkoutDays);
 
 	    // Ensure checkoutRecord is not null
-	    libraryMember.getCheckoutRecord().addEntry(entry);
-
+	    if( libraryMember.getCheckoutRecord() == null) {
+	    	 libraryMember.setCheckoutRecord(new CheckoutRecord());
+	    }
+		    libraryMember.getCheckoutRecord().addEntry(entry);
+		    saveToStorage(StorageType.MEMBERS, mems);
+		    HashMap<String, CheckoutEntry> entries = new HashMap<>();
+		    entries.put(isbn, entry);
+		    saveToStorage(StorageType.BOOKCHECKOUT, entries);
+		  
+		    
 	    availableCopy.get().changeAvailability();
+	    saveToStorage(StorageType.BOOKS, books);
 	    
+	    System.out.println(" System.out.println(availableCopy);");
+		   System.out.println(availableCopy);
 	    return "Checked out: " + foundBook.getTitle() + " (Copy #" + availableCopy.get().getCopyNum() + ") until " + entry.getDueDate();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public HashMap<String, CheckoutEntry> readBooksCheckoutMap() {
+		// TODO Auto-generated method stub
+		return (HashMap<String, CheckoutEntry>)readFromStorage(StorageType.BOOKCHECKOUT);
 	}
 
 	

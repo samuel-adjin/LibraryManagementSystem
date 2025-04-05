@@ -62,6 +62,8 @@ public class SystemController implements ControllerInterface {
 		da.saveNewMember(member);
 	}
 	
+	
+	
 	@Override
 	 public boolean isMemberExists(String memberId) {
 	        DataAccess da = new DataAccessFacade();
@@ -99,10 +101,12 @@ public class SystemController implements ControllerInterface {
 		DataAccess da = new DataAccessFacade();
 	    HashMap<String, LibraryMember> members = da.readMemberMap();
 	    if (!members.containsKey(memberId)) {
-	    	System.out.println("In here");
 	        return Collections.emptyList(); 
 	    }
-	    System.out.println(members.get(memberId).getCheckoutRecord().getEntries());
+	    System.out.println("memberId");
+	    System.out.println(memberId);
+	    System.out.println(members.get(memberId));
+	    
 	    return members.get(memberId).getCheckoutRecord().getEntries();
 	}
 	@Override
@@ -111,6 +115,24 @@ public class SystemController implements ControllerInterface {
 		DataAccess da = new DataAccessFacade();
 		da.checkoutBook(memberId, isbn);
 		return "Ok";
+	}
+	@Override
+	public List<CheckoutEntry> allBooksCheckout() {
+		// TODO Auto-generated method stub
+		DataAccess da = new DataAccessFacade();
+		List<CheckoutEntry> checkoutEntry = new ArrayList<>();
+		for (Entry<String, CheckoutEntry> entry : da.readBooksCheckoutMap().entrySet()) {
+			CheckoutEntry value = entry.getValue();
+			checkoutEntry.add(value);
+        }
+		return checkoutEntry;
+	}
+	@Override
+	public HashMap<String, LibraryMember> getAllLibraryMembers() {
+		// TODO Auto-generated method stub
+		DataAccess da = new DataAccessFacade();
+		
+		return da.readMemberMap();
 	}
 	
 	

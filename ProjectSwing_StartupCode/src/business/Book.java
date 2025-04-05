@@ -93,10 +93,14 @@ final public class Book implements Serializable {
 		return "isbn: " + isbn + ", maxLength: " + maxCheckoutLength + ", available: " + isAvailable();
 	}
 	
+	
+	
 	public int getNumCopies() {
 		return copies.length;
 	}
 	
+
+
 	public String getTitle() {
 		return title;
 	}

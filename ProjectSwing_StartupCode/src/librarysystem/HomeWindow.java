@@ -35,6 +35,8 @@ public class HomeWindow extends JFrame {
         JButton addButton = createSidebarButton("📚 Add Books");
         JButton manageButton = createSidebarButton("📚 Manage Copies");
         JButton checkoutButton = createSidebarButton("✔️ Checkout");
+        JButton overDueButton = createSidebarButton("✔️ Books OverDue");
+
         JButton logoutButton = createSidebarButton("🚪 Logout");
 
         // Only administrators can manage members
@@ -54,6 +56,10 @@ public class HomeWindow extends JFrame {
         // Only librarians can checkout books
         if (SystemController.currentAuth == Auth.LIBRARIAN || SystemController.currentAuth == Auth.BOTH) {
             sideMenu.add(checkoutButton);
+        }
+        
+        if (SystemController.currentAuth == Auth.LIBRARIAN || SystemController.currentAuth == Auth.BOTH) {
+            sideMenu.add(overDueButton);
         }
 
         sideMenu.add(logoutButton);
@@ -84,6 +90,14 @@ public class HomeWindow extends JFrame {
             addBooksWindow.setHomeWindow(this); // ✅ Pass reference to update table
             addBooksWindow.setVisible(true);
         });
+        
+        
+        overDueButton.addActionListener(e -> {
+            BookOverDueWindow bookOverDueWindow = new BookOverDueWindow();
+//            addBooksWindow.setHomeWindow(this); // ✅ Pass reference to update table
+            bookOverDueWindow.setVisible(true);
+        });
+        
         
         manageButton.addActionListener(e -> {
             ManageCopiesWindow manageCopiesWindow = new ManageCopiesWindow(this);
