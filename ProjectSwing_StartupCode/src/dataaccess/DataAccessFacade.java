@@ -189,9 +189,7 @@ public class DataAccessFacade implements DataAccess {
 	    Book foundBook = books.get(isbn);
 	    LibraryMember libraryMember = mems.get(memberId);
 	    BookCopy[] bookCopies = foundBook.getCopies();
-	    System.out.println("hghghghhg.");
 
-	    System.out.println(Arrays.toString(bookCopies));
 
 	    Optional<BookCopy> availableCopy = Arrays.stream(bookCopies).filter(BookCopy::isAvailable ).findFirst();
 	    if (!availableCopy.isPresent()) {
@@ -214,9 +212,6 @@ public class DataAccessFacade implements DataAccess {
 		    
 	    availableCopy.get().changeAvailability();
 	    saveToStorage(StorageType.BOOKS, books);
-	    
-	    System.out.println(" System.out.println(availableCopy);");
-		   System.out.println(availableCopy);
 	    return "Checked out: " + foundBook.getTitle() + " (Copy #" + availableCopy.get().getCopyNum() + ") until " + entry.getDueDate();
 	}
 

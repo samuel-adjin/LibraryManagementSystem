@@ -12,10 +12,8 @@ public class CheckoutRecord implements Serializable {
     public CheckoutRecord() { this.entries = new ArrayList<>(); }
 
     public void addEntry(CheckoutEntry entry) { 
-    	System.out.println("adding entries");
-    	System.out.println(entry);
+    	
     	entries.add(entry); 
-    	System.out.println(entries);
     	}
 
     public List<CheckoutEntry> getEntries() { return entries; }

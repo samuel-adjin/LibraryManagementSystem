@@ -78,12 +78,7 @@ public class ManageMembersWindow extends JFrame {
         zipField = new JTextField(15);
         add(zipField, gbc);
 
-        // 🟢 Role Selection
-        gbc.gridx = 0; gbc.gridy = 8;
-        add(new JLabel("Role:"), gbc);
-        gbc.gridx = 1;
-        roleDropdown = new JComboBox<>(Auth.values()); // Dropdown for LIBRARIAN, ADMIN, BOTH
-        add(roleDropdown, gbc);
+    
 
         // 🟢 Add Member Button
         JButton addButton = new JButton("Add Member");
@@ -106,7 +101,6 @@ public class ManageMembersWindow extends JFrame {
                 String city = cityField.getText().trim();
                 String state = stateField.getText().trim();
                 String zip = zipField.getText().trim();
-                Auth role = (Auth) roleDropdown.getSelectedItem();
 
                 SystemController systemController = new SystemController();
 

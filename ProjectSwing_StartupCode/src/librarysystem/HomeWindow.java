@@ -23,7 +23,7 @@ public class HomeWindow extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // 🟢 Create side menu (Modern Dark UI)
+        // Create side menu 
         JPanel sideMenu = new JPanel();
         sideMenu.setLayout(new BoxLayout(sideMenu, BoxLayout.Y_AXIS));
         sideMenu.setPreferredSize(new Dimension(180, 0));
@@ -64,12 +64,12 @@ public class HomeWindow extends JFrame {
 
         sideMenu.add(logoutButton);
 
-        // 🟢 Modern Main Content Panel
+        // Main Content Panel
         JPanel mainContent = new JPanel(new BorderLayout());
         mainContent.setBackground(Color.WHITE);
         mainContent.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // 🟢 Create Modern Table
+        //  Create Modern Table
         String[] columns = {"ISBN", "Title", "Availability", "Copies"};
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
@@ -82,26 +82,24 @@ public class HomeWindow extends JFrame {
         JScrollPane scrollPane = new JScrollPane(table);
         mainContent.add(scrollPane, BorderLayout.CENTER);
 
-        // 🟢 Button Actions
+        //  Button Actions
         memberButton.addActionListener(e -> new ManageMembersWindow().setVisible(true));
 
         addButton.addActionListener(e -> {
             AddBooksWindow addBooksWindow = new AddBooksWindow();
-            addBooksWindow.setHomeWindow(this); // ✅ Pass reference to update table
+            addBooksWindow.setHomeWindow(this); 
             addBooksWindow.setVisible(true);
         });
         
         
         overDueButton.addActionListener(e -> {
             BookOverDueWindow bookOverDueWindow = new BookOverDueWindow();
-//            addBooksWindow.setHomeWindow(this); // ✅ Pass reference to update table
             bookOverDueWindow.setVisible(true);
         });
         
         
         manageButton.addActionListener(e -> {
             ManageCopiesWindow manageCopiesWindow = new ManageCopiesWindow(this);
-//            manageCopiesWindow.setHomeWindow(this); // ✅ Pass reference to update table
             manageCopiesWindow.setVisible(true);
         });
 
@@ -112,12 +110,12 @@ public class HomeWindow extends JFrame {
             dispose(); // Close Home Window
         });
 
-        // 🟢 Add Components to Frame
+        // Add Components to Frame
         add(sideMenu, BorderLayout.WEST);
         add(mainContent, BorderLayout.CENTER);
     }
 
-    // ✅ Refresh the table when a book is added
+    // Refresh the table when a book is added
     public void refreshTable() {
         model.setRowCount(0); // Clear old data
         SystemController sys = new SystemController();
@@ -128,7 +126,7 @@ public class HomeWindow extends JFrame {
         }
     }
 
-    // 🔹 Modern Sidebar Button
+    // Sidebar Button
     private JButton createSidebarButton(String text) {
         JButton button = new JButton(text);
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -153,7 +151,7 @@ public class HomeWindow extends JFrame {
         return button;
     }
 
-    // 🔹 Modern Table Styling
+    // Table Styling
     private void styleTable(JTable table) {
         table.setFont(new Font("SansSerif", Font.PLAIN, 14));
         table.setRowHeight(30);
@@ -172,7 +170,7 @@ public class HomeWindow extends JFrame {
             }
         });
 
-        // Modern Table Header
+        // Table Header
         JTableHeader header = table.getTableHeader();
         header.setFont(new Font("SansSerif", Font.BOLD, 15));
         header.setBackground(new Color(30, 30, 30));

@@ -103,10 +103,6 @@ public class SystemController implements ControllerInterface {
 	    if (!members.containsKey(memberId)) {
 	        return Collections.emptyList(); 
 	    }
-	    System.out.println("memberId");
-	    System.out.println(memberId);
-	    System.out.println(members.get(memberId));
-	    
 	    return members.get(memberId).getCheckoutRecord().getEntries();
 	}
 	@Override
